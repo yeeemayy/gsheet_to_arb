@@ -45,6 +45,7 @@ class TranslationParser {
               document.languages[index] +
               ', key: ' +
               item.key);
+          continue;
         }
 
         final itemPlaceholders = _findPlaceholders(itemValue);

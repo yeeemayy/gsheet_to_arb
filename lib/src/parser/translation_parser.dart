@@ -6,10 +6,12 @@
 
 import 'dart:async';
 import 'package:gsheet_to_arb/src/arb/arb.dart';
+import 'package:gsheet_to_arb/src/parser/_common_parser.dart';
+import 'package:gsheet_to_arb/src/parser/_gender_parser.dart';
+import 'package:gsheet_to_arb/src/parser/_plurals_parser.dart';
 import 'package:gsheet_to_arb/src/translation_document.dart';
 import 'package:gsheet_to_arb/src/utils/log.dart';
-
-import '_plurals_parser.dart';
+import 'package:recase/recase.dart';
 
 class TranslationParser {
   final bool addContextPrefix;
@@ -19,13 +21,16 @@ class TranslationParser {
 
   Future<ArbBundle> parseDocument(TranslationsDocument document) async {
     final builders = <ArbDocumentBuilder>[];
-    final parsers = <PluralsParser>[];
+    final genderParsers = <GendersParser>[];
+    final pluralParsers = <PluralsParser>[];
 
     for (var langauge in document.languages) {
       final builder = ArbDocumentBuilder(langauge, document.lastModified);
-      final parser = PluralsParser(addContextPrefix, caseType);
+      final genderParser = GendersParser(addContextPrefix, caseType);
+      final pluralsParsers = PluralsParser(addContextPrefix, caseType);
       builders.add(builder);
-      parsers.add(parser);
+      genderParsers.add(genderParser);
+      pluralParsers.add(pluralsParsers);
     }
 
     // for each row
@@ -51,28 +56,52 @@ class TranslationParser {
         final itemPlaceholders = _findPlaceholders(itemValue);
 
         final builder = builders[index];
-        final parser = parsers[index];
 
         // plural consume
-        final status = parser.consume(ArbResource(item.key, itemValue,
+        final pluralParser = pluralParsers[index];
+
+        final pluralStatus = pluralParser.consume(ArbResource(
+            item.key, itemValue,
             placeholders: itemPlaceholders,
             context: item.category,
             description: item.description));
 
-        if (status is Consumed) {
+        if (pluralStatus is Consumed) {
           continue;
         }
 
-        if (status is Completed) {
-          builder.add(status.resource);
+        if (pluralStatus is Completed) {
+          builder.add(pluralStatus.resource);
 
           // next plural
-          if (status.consumed) {
+          if (pluralStatus.consumed) {
             continue;
           }
         }
 
-        final key = PluralsParser.reCase(
+        // gender consume
+        final genderParser = genderParsers[index];
+
+        final genderStatus = genderParser.consume(ArbResource(
+            item.key, itemValue,
+            placeholders: itemPlaceholders,
+            context: item.category,
+            description: item.description));
+
+        if (genderStatus is Consumed) {
+          continue;
+        }
+
+        if (genderStatus is Completed) {
+          builder.add(genderStatus.resource);
+
+          // next gender
+          if (genderStatus.consumed) {
+            continue;
+          }
+        }
+
+        final key = reCase(
             addContextPrefix && item.category.isNotEmpty
                 ? item.category + '_' + item.key
                 : item.key,
@@ -89,10 +118,21 @@ class TranslationParser {
     // finalizer
     for (var index in Iterable<int>.generate(document.languages.length - 1)) {
       final builder = builders[index];
-      final parser = parsers[index];
+      final parser = genderParsers[index];
       final status = parser.complete();
       if (status is Completed) {
         builder.add(status.resource);
+      }
+
+      final genderParser = genderParsers[index];
+      final genderStatus = genderParser.complete();
+      if (genderStatus is Completed) {
+        builder.add(genderStatus.resource);
+      }
+      final pluralParser = pluralParsers[index];
+      final pluralStatus = pluralParser.complete();
+      if (pluralStatus is Completed) {
+        builder.add(pluralStatus.resource);
       }
     }
 
@@ -125,5 +165,14 @@ class TranslationParser {
       }
     });
     return placeholders.values.toList();
+  }
+
+  static String reCase(String s, caseType) {
+    switch (caseType ?? '') {
+      case 'camelCase':
+        return s.camelCase;
+      default:
+        return s;
+    }
   }
 }

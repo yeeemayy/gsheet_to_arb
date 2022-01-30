@@ -1,4 +1,4 @@
-import 'package:intl_translation/src/intl_message.dart';
+import 'package:intl_generator/generate_localized.dart';
 import 'package:petitparser/petitparser.dart';
 
 class CustomIcuParser {

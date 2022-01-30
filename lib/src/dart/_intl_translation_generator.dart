@@ -8,10 +8,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:gsheet_to_arb/src/utils/log.dart';
-import 'package:intl_translation/extract_messages.dart';
-import 'package:intl_translation/generate_localized.dart';
-import 'package:intl_translation/src/icu_parser.dart';
-import 'package:intl_translation/src/intl_message.dart';
+import 'package:intl_generator/extract_messages.dart';
+import 'package:intl_generator/generate_localized.dart';
 import 'package:path/path.dart' as path;
 
 class IntlTranslationGenerator {

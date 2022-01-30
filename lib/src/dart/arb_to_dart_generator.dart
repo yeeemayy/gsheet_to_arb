@@ -10,10 +10,10 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:gsheet_to_arb/src/arb/arb.dart';
 import 'package:gsheet_to_arb/src/utils/log.dart';
+import 'package:intl_generator/generate_localized.dart';
 import 'package:recase/recase.dart';
 import '_icu_parser.dart';
 import '_intl_translation_generator.dart';
-import 'package:intl_translation/src/intl_message.dart';
 import 'package:petitparser/petitparser.dart';
 
 class ArbToDartGenerator {

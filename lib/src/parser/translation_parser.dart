@@ -5,6 +5,7 @@
  */
 
 import 'dart:async';
+
 import 'package:gsheet_to_arb/src/arb/arb.dart';
 import 'package:gsheet_to_arb/src/parser/_common_parser.dart';
 import 'package:gsheet_to_arb/src/parser/_gender_parser.dart';
@@ -161,7 +162,7 @@ class TranslationParser {
           throw Exception('Placeholder $placeholderName already declared');
         }
         placeholders[placeholderName] =
-            (ArbResourcePlaceholder(name: placeholderName, type: 'text'));
+            (ArbResourcePlaceholder(name: placeholderName, type: 'String'));
       }
     });
     return placeholders.values.toList();

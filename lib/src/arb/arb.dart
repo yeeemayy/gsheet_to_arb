@@ -65,8 +65,8 @@ class ArbResource {
       {this.description = '', this.context = '', this.placeholders = const []})
       : key = key,
         value = value {
-    // Possible values are "text", "image", "css"
-    attributes['type'] = 'Text';
+    // Possible values are "String", "image", "css"
+    attributes['type'] = 'String';
 
     if (placeholders != null && placeholders!.isNotEmpty) {
       attributes['placeholders'] = _formatPlaceholders(placeholders!);
@@ -95,7 +95,7 @@ class ArbResource {
 }
 
 class ArbResourcePlaceholder {
-  static String typeText = 'text';
+  static String typeText = 'String';
   static String typeNum = 'num';
 
   final String name;

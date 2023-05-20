@@ -7,7 +7,7 @@ void main() async {
   print('MAIN');
 
   Intl.defaultLocale = 'pl';
-  await initializeMessages(Intl.defaultLocale);
+  await initializeMessages(Intl.defaultLocale!);
 
   final l10n = L10n();
 
@@ -22,6 +22,4 @@ void main() async {
   print(l10n.numberOfSongsAvailable(2));
   print(l10n.numberOfSongsAvailable(5));
   print(l10n.numberOfSongsAvailable(10));
-
-  
 }

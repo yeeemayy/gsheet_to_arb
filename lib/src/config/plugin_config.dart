@@ -88,7 +88,7 @@ class GoogleSheetConfig {
   @JsonKey(name: 'rows', fromJson: SheetRows.generateFromJson)
   SheetRows sheetRows;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: true, includeToJson: true)
   AuthConfig? auth;
 
   GoogleSheetConfig({

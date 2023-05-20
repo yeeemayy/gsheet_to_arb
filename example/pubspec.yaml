@@ -2,7 +2,7 @@ name: gsheet_to_arb_example
 description: Example of how to use ghseet_to_arb plugin
 
 environment:
-  sdk: '>=2.0.1 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   intl: any
